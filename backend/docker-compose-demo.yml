@@ -18,7 +18,7 @@ services:
       - -config.file=/etc/promtail/config.yaml
 
   grafana:
-    image: grafana/grafana
+    image: ekavakakis/movierama-grafana:latest
     container_name: grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
