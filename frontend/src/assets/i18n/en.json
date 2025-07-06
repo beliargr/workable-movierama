@@ -1,0 +1,126 @@
+{
+    "primeng": {
+        "monthNames": [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ],
+        "dateFormat": "dd/mm/yy",
+        "dayNamesShort": [
+            "Sun",
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+        ],
+        "dayNamesMin": [
+            "Sun",
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+        ],
+        "startsWith": "Starts with",
+        "today": "Today",
+        "clear": "Clear",
+        "contains": "Contains",
+        "notContains": "Does not contain",
+        "endsWith": "Ends with",
+        "equals": "Equals",
+        "notEquals": "Does not equal",
+        "noFilter": "No filter",
+        "lt": "Less than",
+        "lte": "Less than or equal to",
+        "gt": "Greater than",
+        "gte": "Greater than or equal to",
+        "dateIs": "Date is",
+        "dateIsNot": "Date is not",
+        "dateBefore": "Date before",
+        "dateAfter": "Date after",
+        "selectionMessage": "{0} selected records"
+    },
+    "crud": {
+        "manageMovies": "Manage Movies",
+        "id": "Movie ID",
+        "title": "Title",
+        "description": "Description",
+        "createdDate": "Created At",
+        "genre": "Genre",
+        "createdBy": "Created By",
+        "lastModifiedDate": "Modified At",
+        "ratings": "Ratings",
+        "movieDetails": "Movie Details",
+        "likes": "Number of Likes",
+        "hates": "Number of Hates",
+        "successfulDeletion": "Movies Deleted Successfully",
+        "successfulUpdate": "Movies Updated Successfully",
+        "genres": "Movie Genre"
+    },
+    "menu": {
+        "analytics": "Analytics Control Tower",
+        "audit": "Audit Support",
+        "command-level": "Command Level"
+    },
+    "login": {
+        "welcome": "Welcome to MovieRama",
+        "signInButton": "Sign In"
+    },
+    "validation": {
+        "required": "Field is required"
+    },
+    "LOOKUPS": {
+        "MOVIE_GENRES": {
+            "ACTION": "Action",
+            "COMEDY": "Comedy",
+            "DRAMA": "Drama",
+            "HORROR": "Horror",
+            "ROMANCE": "Romance",
+            "SCIENCE": "Science"
+        }
+    },
+    "generic": {
+        "button-delete": "Cancellation",
+        "button-approve": "Approve",
+        "button-save": "Save",
+        "button-submit": "Submit",
+        "button-completionMandate": "Completion of Mandate",
+        "button-clear": "Clear",
+        "button-search": "Search",
+        "to": "to",
+        "of": "of",
+        "select-user": "Select User",
+        "mandatory-field": "Mandatory Field",
+        "yes": "Yes",
+        "no": "No",
+        "only-numbers": "Only numbers are allowed",
+        "characters": "characters",
+        "exceeded-characters": "You have exceeded the",
+        "character-limit": "character limit.",
+        "correct-format": "Type in the correct format:",
+        "e.g": "e.g.",
+        "support": "Application Support",
+        "selected-columns": "Selected Columns",
+        "button-loading-data": "Loading Data",
+        "button-add": "Add",
+        "upload-file": "Upload File",
+        "new": "New",
+        "delete": "Delete",
+        "deletionConfirmation": "Are you sure you want to delete the selected movies?"
+    },
+    "errors": {
+        "USER_RATING_ERROR": "User that has submitted a movie cannot rate it"
+    }
+}

@@ -1,0 +1,55 @@
+
+spring:
+  application:
+    name: movierama
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PWD}
+    driver-class-name: org.postgresql.Driver
+  cache:
+    type: redis
+  data:
+    redis:
+      host: ${CACHE_URL}
+      port: 6379
+      username: default
+      password: ${CACHE_PWD}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          #issuer-uri: ${KEYCLOAK_URL}
+          jwk-set-uri: ${KEYCLOAK_URL}
+#  flyway:
+#    enabled: true
+#    locations: classpath:migrations
+#    user: movierama_app_user
+#    password: movieramapassword
+#    baseline-on-migrate: true
+server:
+  servlet:
+    context-path: /movierama/api
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      access: unrestricted
+logging:
+  file:
+    name: /logs/application.log
+  level:
+    root: info
+    org.springframework.web: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework.boot.actuate: DEBUG
+    org.springframework.data.jpa: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE

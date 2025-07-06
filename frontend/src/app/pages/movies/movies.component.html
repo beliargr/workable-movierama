@@ -1,0 +1,149 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="{{'generic.new' | translate}}" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()"/>
+        <p-button severity="secondary" label="{{'generic.delete' | translate}}" icon="pi pi-trash" outlined
+                  (onClick)="deleteSelectedProducts()"
+                  [disabled]="!selectedProducts || !selectedProducts.length"/>
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="(movies | async) || []"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['title', 'createdBy']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedProducts"
+    [loading]="loading"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="{first} {{'generic.to' | translate}} {last} {{'generic.of' | translate}} {totalRecords}"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]">
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">{{ 'crud.manageMovies' | translate }}</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search"/>
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."/>
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox/>
+            </th>
+            <th pSortableColumn="title" style="min-width:16rem">
+                {{ 'crud.title' | translate }}
+                <p-sortIcon field="title"/>
+            </th>
+            <th pSortableColumn="description" style="min-width: 8rem">
+                {{ 'crud.description' | translate }}
+                <p-sortIcon field="description"/>
+            </th>
+            <th pSortableColumn="genre" style="min-width:10rem">
+                {{ 'crud.genre' | translate }}
+                <p-sortIcon field="genre"/>
+            </th>
+            <th pSortableColumn="likes" style="min-width:10rem">
+                {{ 'crud.likes' | translate }}
+                <p-sortIcon field="likes"/>
+            </th>
+            <th pSortableColumn="hates" style="min-width:10rem">
+                {{ 'crud.hates' | translate }}
+                <p-sortIcon field="hates"/>
+            </th>
+            <th  style="min-width: 12rem">
+                {{ 'crud.createdBy' | translate }}
+                <p-columnFilter type="text" field="createdBy" placeholder="Type to search" ariaLabel="Filter Name" ></p-columnFilter>
+            </th>
+            <th pSortableColumn="createdDate" style="min-width: 12rem">
+                {{ 'crud.createdDate' | translate }}
+                <p-sortIcon field="createdDate"/>
+            </th>
+
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-record>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="record"/>
+            </td>
+            <td style="min-width: 12rem">{{ record.title }}</td>
+            <td style="min-width: 16rem">{{ record.description }}</td>
+            <td style="min-width: 16rem">
+                <p-select [options]="($lookups | async)['MOVIE_GENRES']" [ngModel]="record.genre" [disabled]="true"
+                          optionLabel="label" optionValue="value" placeholder="{{'crud.genres' | translate}}" fluid/>
+            </td>
+            <td>{{ record.likes }}</td>
+            <td>{{ record.hates }}</td>
+            <td>{{ record.createdBy }}</td>
+            <td>{{ record.createdDate | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+                          (click)="edit(record)"/>
+                <p-button  icon="pi pi-trash" severity="danger" class="mr-2" [rounded]="true" [outlined]="true"
+                          (click)="delete(record)"/>
+                <ng-container *ngIf="record.createdBy !== authService.profile.username">
+                    <p-button *ngIf="record.userRating != IRatingType.LIKE" icon="pi pi-thumbs-up" class="mr-2" severity="info" [rounded]="true" [outlined]="true"
+                              (click)="rate(record, IRatingType.LIKE)"/>
+                    <p-button *ngIf="record.userRating != IRatingType.HATE" icon="pi pi-thumbs-down" class="mr-2" severity="warn" [rounded]="true" [outlined]="true"
+                              (click)="rate(record, IRatingType.HATE)"/>
+                    <p-button *ngIf="record.ratingId" icon="pi pi-ban" severity="danger" [rounded]="true" [outlined]="true"
+                              (click)="rate(record, null)"/>
+                </ng-container>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [formGroup]="form" [(visible)]="productDialog" [style]="{ width: '450px' }"
+          header="{{'crud.movieDetails' | translate}}" [modal]="true" (ngSubmit)="save()">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-3">{{ 'crud.title' | translate }}</label>
+                <input type="text" pInputText id="name" formControlName="title" autofocus fluid/>
+                <small class="text-red-500"
+                       *ngIf="form.get('title')?.errors?.['required']">{{ 'validation.required' | translate }}</small>
+            </div>
+            <div>
+                <label for="description" class="block font-bold mb-3">{{ 'crud.description' | translate }}</label>
+                <textarea id="description" pTextarea formControlName="description" required rows="3"
+                          cols="20" fluid></textarea>
+                <small class="text-red-500"
+                       *ngIf="form.get('description')?.errors?.['required']">{{ 'validation.required' | translate }}</small>
+            </div>
+            <div>
+                <label for="genre" class="block font-bold mb-3">{{ 'crud.genre' | translate }}</label>
+                <p-select formControlName="genre" inputId="genre" [options]="($lookups | async)['MOVIE_GENRES']"
+                          optionLabel="label" optionValue="value" placeholder="{{'crud.genres' | translate}}" fluid/>
+                <small class="text-red-500"
+                       *ngIf="form.get('genre')?.errors?.['required']">{{ 'validation.required' | translate }}</small>
+            </div>
+            <div>
+                <label for="createdBy" class="block font-bold mb-3">{{ 'crud.createdBy' | translate }}</label>
+                <input id="createdBy" pTextarea formControlName="createdBy" fluid/>
+            </div>
+            <div>
+                <label for="createdDate" class="block font-bold mb-3">{{ 'crud.createdDate' | translate }}</label>
+                <p-datepicker formControlName="createdDate" dateFormat="dd/mm/yy" [showTime]="true" [showSeconds]="true" fluid></p-datepicker>
+            </div>
+            <div>
+                <label for="createdDate" class="block font-bold mb-3">{{ 'crud.lastModifiedDate' | translate }}</label>
+                <p-datepicker formControlName="lastModifiedDate" dateFormat="dd/mm/yy" [showTime]="true" [showSeconds]="true" fluid></p-datepicker>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
+        <p-button label="Save" icon="pi pi-check" (click)="save()" [disabled]="form.invalid"/>
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }"/>
+<p-toast></p-toast>

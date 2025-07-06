@@ -1,0 +1,26 @@
+{
+    "/movierama/api/**": {
+        "target": "http://localhost:8082",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    },
+    "/.well-known": {
+        "target": "http://localhost:8081",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/realms/**": {
+        "target": "http://localhost:8081",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/resources/hkee5/**": {
+        "target": "http://localhost:8081",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
+}

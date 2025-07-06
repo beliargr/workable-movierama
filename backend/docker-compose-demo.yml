@@ -1,0 +1,104 @@
+services:
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - 3100:3100
+    volumes:
+      - ./configuration/loki-config.yml:/etc/loki/loki-config.yaml
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - ./configuration/promtail-config.yml:/etc/promtail/config.yaml
+      - ./logs:/app/logs:rw
+    command:
+      - -config.file=/etc/promtail/config.yaml
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - 3000:3000
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./configuration/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  postgres:
+    image: postgres:16
+    container_name: postgress
+    environment:
+      POSTGRES_USER: dbadmin
+      POSTGRES_PASSWORD: dbadmin
+      POSTGRES_DB: movierama
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--requirepass", "movierama_password" ]
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:24.0
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: keycloak
+      KEYCLOAK_ADMIN_PASSWORD: keycloak
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/movierama?currentSchema=keycloak
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_PASSWORD: keycloak
+      #KC_IMPORT: /opt/keycloak/data/import/movierama-realm.json
+    volumes:
+      - ./configuration/movierama-realm.json:/opt/keycloak/data/import/movierama-realm.json
+    ports:
+      - "8081:8080"
+
+  backend:
+    container_name: movierama-be
+    image: ekavakakis/movierama-be:latest
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://postgres:5432/movierama?currentSchema=movierama
+      DATASOURCE_USER: movierama_app_user
+      DATASOURCE_PWD: movieramapassword
+      CACHE_URL: redis
+      CACHE_PWD: movierama_password
+      KEYCLOAK_URL: http://keycloak:8080/realms/movierama
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./logs:/logs
+    depends_on:
+      - postgres
+      - redis
+      - promtail
+      - keycloak
+
+  frontend:
+    container_name: movierama-fe
+    image: ekavakakis/movierama-fe:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - keycloak
+      - backend
+
+
+
