@@ -8,7 +8,7 @@ A full-stack web application to manage movies and ratings, built with:
 - **Authentication**: Keycloak
 - **Observability**: Loki, Promtail, Grafana, Prometheus
 
-In adition to the required functional features, the application includes:
+In addition to the required functional features, the application includes:
 - **Multilanguage support**: English and Greek both labels and lookup data
 - **Dark mode**: Toggle between light and dark theme
 - **Responsive design**: Optimized for desktop and mobile devices
