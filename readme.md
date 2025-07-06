@@ -8,16 +8,24 @@ A full-stack web application to manage movies and ratings, built with:
 - **Authentication**: Keycloak
 - **Observability**: Loki, Promtail, Grafana, Prometheus
 
+In adition to the required functional features, the application includes:
+- **Multilanguage support**: English and Greek both labels and lookup data**
+- **Dark mode**: Toggle between light and dark theme
+- **Responsive design**: Optimized for desktop and mobile devices
+- **Api Documentation**: Swagger UI for backend API under /movierama/api/swagger-ui/index.html
+- **Dockerized**: All components are containerized for easy deployment
+- **Monitoring and Logging**: Integrated with Grafana, Loki, and Prometheus for observability
+- **Keycloak**: For secure authentication, authorization and user management.
+- **Cache**: Redis for caching frequently accessed data
+
 ---
 
 ## 📂 Project Structure
 
 ```
-backend/           # Spring Boot application
-frontend/          # Angular frontend
-docker-compose.yml # Multi-container stack
-loki-config.yml    # Loki configuration
-promtail-config.yml# Promtail configuration
+backend/                # Spring Boot application
+backend/configuration/  # Configuration files for externally provisioning confuguration files to Prometheus, Promtail, Loki and Keycloak
+frontend/               # Angular frontend
 ```
 
 ---
@@ -29,21 +37,16 @@ Make sure you have **Docker** and **Docker Compose** installed.
 1️⃣ Clone the repository:
 
 ```bash
+
 git clone https://github.com/your-username/movierama.git
-cd movierama
-```
-
-2️⃣ Build the backend and frontend Docker images (or use prebuilt images):
-
-```bash
-docker build -t movierama-be ./backend
-docker build -t movierama-fe ./frontend
+cd backend
 ```
 
 3️⃣ Start all services:
 
 ```bash
-docker-compose up -d
+
+docker-compose -f docker-compose-demo up -d
 ```
 
 4️⃣ Access the application:
@@ -55,6 +58,27 @@ docker-compose up -d
 
 ---
 
+
+## 🚀 Building the Application Images
+
+1️⃣ Build the frontned Angular application:
+
+```bash
+
+cd frontend
+docker build -t ekavakakis/movierama-fe:latest --build-arg env=production .
+docker push ekavakakis/movierama-fe:latest
+```
+
+2️⃣ Build the backend and frontend Docker images (or use prebuilt images):
+
+```bash
+
+cd backend
+docker build -t ekavakakis/movierama-be:latest .
+docker push ekavakakis/movierama-be:latest
+```
+
 ## 🔑 Keycloak Credentials
 
 Default admin credentials:
@@ -64,36 +88,7 @@ Username: keycloak
 Password: keycloak
 ```
 
-Make sure to:
-
-- Log in to Keycloak
-- Create the `movierama` realm
-- Create clients and roles as needed
-
----
-
-## ⚙️ Environment Configuration
-
-The backend expects these environment variables (configured in `docker-compose.yml`):
-
-- `DATASOURCE_URL`
-- `DATASOURCE_USER`
-- `DATASOURCE_PWD`
-- `CACHE_URL`
-- `CACHE_PWD`
-- `KEYCLOAK_URL`
-
-Example:
-
-```yaml
-environment:
-  DATASOURCE_URL: jdbc:postgresql://postgres:5432/movierama?currentSchema=movierama
-  DATASOURCE_USER: movierama_app_user
-  DATASOURCE_PWD: movieramapassword
-  CACHE_URL: redis
-  CACHE_PWD: movierama_password
-  KEYCLOAK_URL: http://keycloak:8080/realms/movierama
-```
+No additional actions are required to set up Keycloak, since realm configuration is included in the Docker Compose setup.
 
 ---
 
@@ -114,11 +109,25 @@ environment:
 
 ## 🧑‍💻 Development
 
-### Backend
+## Backend
+
+### ⚙️ Environment Configuration
+
+Backend expects these environment variables (configured in `docker-compose.yml`):
+
+- `DATASOURCE_URL` : Database connection URL
+- `DATASOURCE_USER` : Database username
+- `DATASOURCE_PWD` : Database password
+- `CACHE_URL` : Redis cache URL
+- `CACHE_PWD` : Redis cache password
+- `KEYCLOAK_URL` : Keycloak URL for token validation
+
 
 Run Spring Boot app locally:
 
 ```bash
+cd backend
+./mvnw clean package
 ./mvnw spring-boot:run
 ```
 
@@ -127,6 +136,7 @@ Run Spring Boot app locally:
 Install dependencies and start dev server:
 
 ```bash
+
 cd frontend
 npm install
 ng serve --proxy-config proxy.conf.json
@@ -138,7 +148,10 @@ ng serve --proxy-config proxy.conf.json
 
 - **Grafana**: Visualize logs and metrics
 - **Loki**: Stores application logs
-- **Promtail**: Collects logs from Docker containers
+- **Promtail**: Collects logs from Docker containers, by scrapping externally mounted directory ``./logs``
+- **Prometheus**: Scrapes metrics from backend and other services
+- **Backend**: Exposes metrics at `/actuator/prometheus`, writes logs to `/logs` directory for Promtail to collect
+- **Frontend**: No metrics, but forwards application logs to the backend which are collected by Promtail using the same mechanism as above.
 
 Grafana default credentials:
 
@@ -148,15 +161,3 @@ Password: admin
 ```
 
 ---
-
-## 🛡️ Security Notes
-
-- Change default passwords before deploying to production.
-- Secure Docker and restrict network access.
-- Configure HTTPS termination if exposing externally.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
