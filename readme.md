@@ -55,7 +55,7 @@ cd backend
 
 ```bash
 
-docker-compose -f docker-compose-demo up -d
+docker-compose -f docker-compose-demo.yml up -d
 ```
 
 4️⃣ Access the application:
