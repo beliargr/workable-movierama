@@ -33,9 +33,9 @@ frontend/               # Angular frontend
 For better separation of concerns, security and maintenance the application database includes different schemas to support application generated data and data used by supporting service e.g Keycloak
 
 - **movierama**: Schema for application data.
-- **keycloak**: schema for keycloak generated data.
+- **keycloak**: Schema for keycloak generated data.
 
-In the dockerized deloyment, all data are persisted into the host machine, using mounted volume db-data.
+In the dockerized deployment, all data are persisted into the host machine, using mounted volume db-data.
 
 ---
 
@@ -47,7 +47,7 @@ Make sure you have **Docker** and **Docker Compose** installed.
 
 ```bash
 
-git clone https://github.com/your-username/movierama.git
+git clone https://github.com/beliargr/workable-movierama.git
 cd backend
 ```
 
@@ -70,22 +70,22 @@ docker-compose -f docker-compose-demo up -d
 
 ## 🚀 Building the Application Images
 
-1️⃣ Build the frontned Angular application:
+1️⃣ Build the frontend Angular App:
 
 ```bash
 
 cd frontend
-docker build -t ekavakakis/movierama-fe:latest --build-arg env=production .
-docker push ekavakakis/movierama-fe:latest
+docker build -t {image-name} --build-arg env=production .
+docker push {image-name}
 ```
 
-2️⃣ Build the backend and frontend Docker images (or use prebuilt images):
+2️⃣ Build the backend Spring Boot App:
 
 ```bash
 
 cd backend
-docker build -t ekavakakis/movierama-be:latest .
-docker push ekavakakis/movierama-be:latest
+docker build -t {image-name} .
+docker push {image-name}
 ```
 
 ## 🔑 Keycloak Credentials
