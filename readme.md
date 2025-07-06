@@ -9,7 +9,7 @@ A full-stack web application to manage movies and ratings, built with:
 - **Observability**: Loki, Promtail, Grafana, Prometheus
 
 In adition to the required functional features, the application includes:
-- **Multilanguage support**: English and Greek both labels and lookup data**
+- **Multilanguage support**: English and Greek both labels and lookup data
 - **Dark mode**: Toggle between light and dark theme
 - **Responsive design**: Optimized for desktop and mobile devices
 - **Api Documentation**: Swagger UI for backend API under /movierama/api/swagger-ui/index.html
@@ -27,6 +27,15 @@ backend/                # Spring Boot application
 backend/configuration/  # Configuration files for externally provisioning confuguration files to Prometheus, Promtail, Loki and Keycloak
 frontend/               # Angular frontend
 ```
+
+## &#x1F6E2; Database
+
+For better separation of concerns, security and maintenance the application database includes different schemas to support application generated data and data used by supporting service e.g Keycloak
+
+- **movierama**: Schema for application data.
+- **keycloak**: schema for keycloak generated data.
+
+In the dockerized deloyment, all data are persisted into the host machine, using mounted volume db-data.
 
 ---
 
@@ -108,6 +117,7 @@ No additional actions are required to set up Keycloak, since realm configuration
 ---
 
 ## 🧑‍💻 Development
+
 
 ## Backend
 
